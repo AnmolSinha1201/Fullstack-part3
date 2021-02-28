@@ -7,8 +7,17 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFind
 .catch((error) => { console.log('error connecting to MongoDB:', error.message) })
 
 const personSchema = new mongoose.Schema({
-	name: String,
-	number: String
+	name: {type: String, required: true, unique: true, minlength: 3},
+	number: {
+		validate: {
+			validator: function(v) {
+				return v.replace(/[^0-9]/g,'').length >= 8
+			},
+			message: props => `${props.value} does not contain 8 digits!`
+		},
+		type: String,
+		required: true
+	}
 })
 
 personSchema.set('toJSON', {
