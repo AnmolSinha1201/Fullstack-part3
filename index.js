@@ -13,33 +13,6 @@ app.use(express.static('build'))
 morgan.token('body', (request) => JSON.stringify(request.body))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
-let Persons =  [
-	{
-		name: "Arto Hellas",
-		number: "321",
-		id: 1
-	},
-	{
-		name: "Ada Lovelace",
-		number: "39-44-5323523",
-		id: 2
-	},
-	{
-		name: "Dan Abramov",
-		number: "12-43-234345",
-		id: 3
-	},
-	{
-		name: "Mary Poppendieck",
-		number: "39-23-6423122",
-		id: 4
-	}
-]
-
-
-// app.get('/api/persons', (req, res) => {
-// 	res.json(Persons)
-// })
 
 app.get('/api/persons', (request, response) => {
 	Person.find({}).then(persons => {
@@ -80,17 +53,6 @@ app.put('/api/persons/:id', (request, response, next) => {
 		})
 		.catch(error => next(error))
 })
-
-const generateId = () => {
-	const ids = Persons.map(i => i.id);
-
-	while (true)
-	{
-		const id = Math.floor(Math.random() * 1000)
-		if (!ids.includes(id))
-			return id;		
-	}	
-}
   
 app.post('/api/persons', (request, response) => {
 	const body = request.body
@@ -107,17 +69,10 @@ app.post('/api/persons', (request, response) => {
 		})
 	}
 
-	if (Persons.map(i => i.name).includes(body.name)) {
-		return response.status(400).json({ 
-			error: 'Name already exists' 
-		})
-	}
-
   
 	const person = new Person({
 		name: body.name,
 		number: body.number,
-		id: generateId(),
 	});
   
 	person.save().then(savedPerson => {
