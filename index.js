@@ -82,7 +82,11 @@ app.post('/api/persons', (request, response, next) => {
 })
 
 app.get('/api/info', (request, response) => {
-	response.end(`Phonebook has info for ${Persons.length} people.\n\n${new Date()}`)
+	Person.count({})
+		.then(result => {
+			response.end(`Phonebook has info for ${result} people.\n\n${new Date()}`)
+		})
+		.catch(error => next(error))
 })
 
 
